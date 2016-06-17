@@ -30,38 +30,38 @@ class SimpleView: UIView {
 //    
 //    CGContextSetLineWidth (context, 6.0)
 //    CGContextStrokePath(context)
-    drawShape(Square(newCenter: CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)))
+//    drawShape(Square(newCenter: CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)))
 //    drawShape()
 //    super.drawRect(rect)
   }
   
-  func drawShape(shape: Shape) {
-//    UIGraphicsBeginImageContext(self.frame.size)
-//    let context = UIGraphicsGetCurrentContext()
-//    Square(newCenter: CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)).draw(context!)
-    shape.draw(context)
-    CGContextClosePath(context)
-    CGContextSetRGBStrokeColor (context, 0.0, 0.0, 1.0, 1.0) // Blue
-    CGContextSetRGBFillColor (context, 0.0, 0.0, 1.0, 1.0) // White
-    CGContextFillPath(context)
-    
-    CGContextSetLineWidth (context, 6.0)
-    CGContextStrokePath(context)
-  }
-  
-  func drawShape() {
-    for shape in allShapes.shapesArray {
-      shape.draw(context)
-    }
-    
-    CGContextClosePath(context)
-    CGContextSetRGBStrokeColor (context, 0.0, 0.0, 1.0, 1.0) // Blue
-    CGContextSetRGBFillColor (context, 0.0, 0.0, 1.0, 1.0) // White
-    CGContextFillPath(context)
-
-    CGContextStrokePath(context)
-  }
-  
+//  func drawShape(shape: Shape) {
+////    UIGraphicsBeginImageContext(self.frame.size)
+////    let context = UIGraphicsGetCurrentContext()
+////    Square(newCenter: CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)).draw(context!)
+//    shape.draw(context)
+//    CGContextClosePath(context)
+//    CGContextSetRGBStrokeColor (context, 0.0, 0.0, 1.0, 1.0) // Blue
+//    CGContextSetRGBFillColor (context, 0.0, 0.0, 1.0, 1.0) // White
+//    CGContextFillPath(context)
+//    
+//    CGContextSetLineWidth (context, 6.0)
+//    CGContextStrokePath(context)
+//  }
+//  
+//  func drawShape() {
+//    for shape in allShapes.shapesArray {
+//      shape.draw(context)
+//    }
+//    
+//    CGContextClosePath(context)
+//    CGContextSetRGBStrokeColor (context, 0.0, 0.0, 1.0, 1.0) // Blue
+//    CGContextSetRGBFillColor (context, 0.0, 0.0, 1.0, 1.0) // White
+//    CGContextFillPath(context)
+//
+//    CGContextStrokePath(context)
+//  }
+//  
   override func awakeFromNib() {
 //    self.backgroundColor = UIColor.yellowColor()
     setNeedsDisplay()

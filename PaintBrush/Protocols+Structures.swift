@@ -97,7 +97,6 @@ struct Square: Polygon, Draggable, Drawable {
       corners[index].x = cornerVectors[index].x + center.x
       corners[index].y = cornerVectors[index].y + center.y
     }
-    print("updated corners: \(corners)")
   }
   
   mutating func updateFrame() {
@@ -111,11 +110,11 @@ struct Square: Polygon, Draggable, Drawable {
     let height = cornerY.maxElement()! - cornerY.minElement()!
     
     frame = CGRect(x: originX, y: originY, width: width, height: height)
-    print("updated frame: \(frame)")
   }
   
   mutating func centerDidMove(newCenter: CGPoint) {
     center = newCenter
+    print("square.center: \(center)")
     updateCorners()
     updateFrame()
   }
