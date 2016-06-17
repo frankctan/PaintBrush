@@ -12,8 +12,6 @@
 		670EFAFA1D13399500F595E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 670EFAF81D13399500F595E6 /* Main.storyboard */; };
 		670EFAFC1D13399500F595E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 670EFAFB1D13399500F595E6 /* Assets.xcassets */; };
 		670EFAFF1D13399500F595E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 670EFAFD1D13399500F595E6 /* LaunchScreen.storyboard */; };
-		670EFB071D1339B500F595E6 /* DrawingStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670EFB061D1339B500F595E6 /* DrawingStructure.swift */; };
-		670EFB091D137A4600F595E6 /* SimpleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670EFB081D137A4600F595E6 /* SimpleView.swift */; };
 		670EFB0B1D13BBA000F595E6 /* Protocols+Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +23,6 @@
 		670EFAFB1D13399500F595E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		670EFAFE1D13399500F595E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		670EFB001D13399500F595E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		670EFB061D1339B500F595E6 /* DrawingStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingStructure.swift; sourceTree = "<group>"; };
-		670EFB081D137A4600F595E6 /* SimpleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleView.swift; sourceTree = "<group>"; };
 		670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Protocols+Structures.swift"; sourceTree = "<group>"; };
 		670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,18 +57,24 @@
 		670EFAF31D13399500F595E6 /* PaintBrush */ = {
 			isa = PBXGroup;
 			children = (
-				670EFAF41D13399500F595E6 /* AppDelegate.swift */,
 				670EFAF61D13399500F595E6 /* ViewController.swift */,
-				670EFB061D1339B500F595E6 /* DrawingStructure.swift */,
-				670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */,
 				670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */,
-				670EFAF81D13399500F595E6 /* Main.storyboard */,
-				670EFB081D137A4600F595E6 /* SimpleView.swift */,
+				67A8ADC91D14973700F09C43 /* Misc */,
+			);
+			path = PaintBrush;
+			sourceTree = "<group>";
+		};
+		67A8ADC91D14973700F09C43 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
 				670EFAFB1D13399500F595E6 /* Assets.xcassets */,
 				670EFAFD1D13399500F595E6 /* LaunchScreen.storyboard */,
 				670EFB001D13399500F595E6 /* Info.plist */,
+				670EFAF41D13399500F595E6 /* AppDelegate.swift */,
+				670EFAF81D13399500F595E6 /* Main.storyboard */,
+				670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */,
 			);
-			path = PaintBrush;
+			name = Misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,10 +148,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				670EFB091D137A4600F595E6 /* SimpleView.swift in Sources */,
 				670EFAF71D13399500F595E6 /* ViewController.swift in Sources */,
 				670EFAF51D13399500F595E6 /* AppDelegate.swift in Sources */,
-				670EFB071D1339B500F595E6 /* DrawingStructure.swift in Sources */,
 				670EFB0B1D13BBA000F595E6 /* Protocols+Structures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -302,6 +302,7 @@
 				670EFB051D13399500F595E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

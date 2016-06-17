@@ -9,30 +9,40 @@
 import Foundation
 import UIKit
 
-
+///polygon corners can be calculated by adding the center coordinate to a series of corner vectors
 typealias Vector = CGPoint
 
+//All Shapes are both drawable and draggable
 protocol Shape: Drawable, Draggable {
   var center: CGPoint {get set}
-  //frame defines the "hitbox" in which a user can interact with a shape
+  //frame defines the "hitbox" in which a user can interact with a shape and will always be a rectangle
   var frame: CGRect {get set}
   mutating func updateFrame()
 }
 
+//Polygons are shapes and have corners, circles don't
 protocol Polygon: Shape {
   var corners: [CGPoint] {get set}
 }
 
+//Only circles are currently resizable
+protocol Resizable: Shape {
+  mutating func shapeDidResize(vector: CGFloat)
+}
+
+//By moving the center of a shape, the frame coordinates can be calcuated
 protocol Draggable {
   mutating func centerDidMove(newCenter: CGPoint)
   mutating func centerDidMove(previousTouch: CGPoint, newTouch: CGPoint)
 }
+
 
 protocol Drawable {
   func draw(renderer: Renderer)
 }
 
 //draw function will always be the same if the object also inherits from Polygon
+//extensible protocols and selective inheritance pave the way for all sorts of optimizations
 extension Drawable where Self: Polygon {
   func draw(renderer: Renderer) {
     renderer.moveTo(corners.last!)
@@ -42,6 +52,9 @@ extension Drawable where Self: Polygon {
   }
 }
 
+//adapted from WWDC 2015 - Protocol Oriented Programming Talk
+//Polygons are rendered by moving to a base position and then drawing lines between corners
+//Circles are rendered by drawing an arc from 0 to 2pi
 protocol Renderer {
   /// Moves the pen to `position` without drawing anything.
   func moveTo(position: CGPoint)
@@ -56,6 +69,7 @@ protocol Renderer {
   func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
 }
 
+//also from WWDC 2015 - CGContext can be extended by a protocol, and functions can be defined
 extension CGContext: Renderer {
   func moveTo(position: CGPoint) {
     CGContextMoveToPoint(self, position.x, position.y)
@@ -70,6 +84,7 @@ extension CGContext: Renderer {
   }
 }
 
+//tracks active shapes using an array
 struct AllShapes: Drawable {
   var array = [Shape]()
   
@@ -77,6 +92,7 @@ struct AllShapes: Drawable {
     array.append(shape)
   }
   
+  //draws all shapes in the array by rendering
   func draw(renderer: Renderer) {
     for shape in array {
       shape.draw(renderer)
@@ -85,6 +101,10 @@ struct AllShapes: Drawable {
 }
 
 struct Square: Polygon, Drawable {
+  
+  //corner coordinates can be calculated by adding the corner vector to the center
+  //for future versions, corner vectors can be multiplied by a rotation matrix to rotate
+  //the shape in place
   var cornerVectors = [
     Vector(x: -40, y: 40),
     Vector(x: -40, y: -40),
@@ -112,6 +132,8 @@ struct Square: Polygon, Drawable {
     }
   }
   
+  //updates the "hitbox" of the square by storing a frame around a square
+  //updateFrame() should also support rotated squares but has not yet been tested
   mutating func updateFrame() {
     let cornerX = corners.map {$0.x}
     let cornerY = corners.map {$0.y}
@@ -139,7 +161,8 @@ struct Square: Polygon, Drawable {
   }
 }
 
-struct Circle: Shape, Drawable {
+//Circle is very similar to Square
+struct Circle: Shape, Drawable, Resizable {
   var center = CGPointZero
   var radius = CGFloat()
   var frame = CGRect()
@@ -151,16 +174,23 @@ struct Circle: Shape, Drawable {
   }
   
   mutating func updateFrame() {
-    let originX = center.x - radius
-    let originY = center.y - radius
+    //circle drawing is cut off without padding
+    let padding: CGFloat = 5
+    let originX = center.x - radius - padding
+    let originY = center.y - radius - padding
     let origin = CGPoint(x: originX, y: originY)
-    let size = CGSize(width: 2 * radius, height: 2 * radius)
+    let size = CGSize(width: 2 * radius + 2 * padding, height: 2 * radius + 2 * padding)
     
     frame = CGRect(origin: origin, size: size)
   }
   
   mutating func centerDidMove(newCenter: CGPoint) {
     center = newCenter
+    updateFrame()
+  }
+  
+  mutating func shapeDidResize(vector: CGFloat) {
+    radius += vector
     updateFrame()
   }
   
@@ -174,10 +204,3 @@ struct Circle: Shape, Drawable {
     renderer.arcAt(center, radius: radius, startAngle: 0.0, endAngle: CGFloat(M_PI * 2))
   }
 }
-
-
-
-
-
-
-

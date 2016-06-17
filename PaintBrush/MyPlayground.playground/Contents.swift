@@ -41,4 +41,14 @@ b
 
 print(CGRect(x: 0, y: 0, width: 80, height: 80))
 
+var set: Set<Int> = [1,2,3,4]
+
+var q = set.popFirst()!
+var w = set.popFirst()!
+
+set
+
+
+
+
 
