@@ -36,22 +36,6 @@ protocol Draggable {
   mutating func centerDidMove(previousTouch: CGPoint, newTouch: CGPoint)
 }
 
-
-protocol Drawable {
-  func draw(renderer: Renderer)
-}
-
-//draw function will always be the same if the object also inherits from Polygon
-//extensible protocols and selective inheritance pave the way for all sorts of optimizations
-extension Drawable where Self: Polygon {
-  func draw(renderer: Renderer) {
-    renderer.moveTo(corners.last!)
-    for corner in corners {
-      renderer.lineTo(corner)
-    }
-  }
-}
-
 //adapted from WWDC 2015 - Protocol Oriented Programming Talk
 //Polygons are rendered by moving to a base position and then drawing lines between corners
 //Circles are rendered by drawing an arc from 0 to 2pi
@@ -69,6 +53,22 @@ protocol Renderer {
   func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
 }
 
+//adapted from WWDC 2015
+protocol Drawable {
+  func draw(renderer: Renderer)
+}
+
+//draw function will always be the same if the object also inherits from Polygon
+//extensible protocols and selective inheritance pave the way for all sorts of optimizations
+extension Drawable where Self: Polygon {
+  func draw(renderer: Renderer) {
+    renderer.moveTo(corners.last!)
+    for corner in corners {
+      renderer.lineTo(corner)
+    }
+  }
+}
+
 //also from WWDC 2015 - CGContext can be extended by a protocol, and functions can be defined
 extension CGContext: Renderer {
   func moveTo(position: CGPoint) {
@@ -83,6 +83,8 @@ extension CGContext: Renderer {
     CGContextAddPath(self, arc)
   }
 }
+
+//MARK: Shape Structs
 
 //tracks active shapes using an array
 struct AllShapes: Drawable {

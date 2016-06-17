@@ -57,8 +57,8 @@
 		670EFAF31D13399500F595E6 /* PaintBrush */ = {
 			isa = PBXGroup;
 			children = (
-				670EFAF61D13399500F595E6 /* ViewController.swift */,
 				670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */,
+				670EFAF61D13399500F595E6 /* ViewController.swift */,
 				67A8ADC91D14973700F09C43 /* Misc */,
 			);
 			path = PaintBrush;
@@ -67,14 +67,14 @@
 		67A8ADC91D14973700F09C43 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				670EFAFB1D13399500F595E6 /* Assets.xcassets */,
-				670EFAFD1D13399500F595E6 /* LaunchScreen.storyboard */,
-				670EFB001D13399500F595E6 /* Info.plist */,
 				670EFAF41D13399500F595E6 /* AppDelegate.swift */,
+				670EFAFB1D13399500F595E6 /* Assets.xcassets */,
+				670EFB001D13399500F595E6 /* Info.plist */,
+				670EFAFD1D13399500F595E6 /* LaunchScreen.storyboard */,
 				670EFAF81D13399500F595E6 /* Main.storyboard */,
 				670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */,
 			);
-			name = Misc;
+			path = Misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,6 +163,7 @@
 				670EFAF91D13399500F595E6 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		670EFAFD1D13399500F595E6 /* LaunchScreen.storyboard */ = {
@@ -171,6 +172,7 @@
 				670EFAFE1D13399500F595E6 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -265,7 +267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = PaintBrush/Info.plist;
+				INFOPLIST_FILE = PaintBrush/Misc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.PaintBrush;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -276,7 +278,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = PaintBrush/Info.plist;
+				INFOPLIST_FILE = PaintBrush/Misc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.PaintBrush;
 				PRODUCT_NAME = "$(TARGET_NAME)";

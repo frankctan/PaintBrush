@@ -20,10 +20,10 @@ class ViewController: UIViewController {
     case Square
     case Circle
   }
+  
   //for fun
   let colors = [UIColor.blackColor(), UIColor.blueColor(), UIColor.brownColor(),
                 UIColor.cyanColor(), UIColor.orangeColor()]
-
   
   //allShapes keeps a ledger of active shapes while imageViewArray hold the corresponding UIImageViews.
   var allShapes = AllShapes()
@@ -55,6 +55,7 @@ class ViewController: UIViewController {
     return image
   }
   
+  //MARK: UIResponder - Touch
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     let touch = touches.first!
     let touchPosition = touch.locationInView(view)
@@ -68,62 +69,11 @@ class ViewController: UIViewController {
     case 1:
       addNewShape(touchPosition, newShape: .Square)
     case 2:
-      print("two finger touch")
       addNewShape(touchPosition, newShape: .Circle)
       let touchArray = Array(touches)
       pinchDistance = calculatePinchDistance(touchArray[0], touch2: touchArray[1])
-    default: print("tapped too many times!")
+    default: break
     }
-  }
-  
-  ///calculates the distance between two UITouches
-  func calculatePinchDistance(touch1: UITouch, touch2: UITouch) -> CGFloat {
-    let p1 = touch1.locationInView(view)
-    let p2 = touch2.locationInView(view)
-    
-    return hypot(p1.x - p2.x, p1.y - p2.y)
-  }
-  
-  ///updates selectedShape, allShapes and imageViewArray
-  func addNewShape(center: CGPoint, newShape: AvailableShapes) {
-    //declare new shape at the touched position
-    var shape: Shape
-    switch newShape {
-    case .Square: shape = Square(newCenter: center)
-    case .Circle: shape = Circle(newCenter: center)
-    }
-    
-    //translate the shape into a UIImage
-    let shapeImage = translateShapeToImage(shape)
-    
-    //assign an imageView to the new shape at the touch coordinates
-    let imageView = UIImageView(frame: shape.frame)
-    imageView.image = shapeImage
-    
-    //assign new shapes and views to their corresponding arrays for future reference
-    allShapes.appendShape(shape)
-    imageViewArray.append(imageView)
-    self.view.addSubview(imageView)
-    
-    updateSelectedShape(shape, allShapes.array.count - 1)
-  }
-  
-  ///checks if user touch is within allShapes and updates selectedImage accordingly
-  func isShapeSelected(touch: CGPoint) -> Bool {
-    for (index, shape) in allShapes.array.enumerate() {
-      if CGRectContainsPoint(shape.frame, touch) {
-        updateSelectedShape(shape, index)
-        return true
-      }
-    }
-    updateSelectedShape(nil, nil)
-    return false
-  }
-  
-  ///update ViewController's instance variables
-  func updateSelectedShape(shape: Shape?, _ index: Int?) {
-    selectedShape = shape
-    selectedShapeIndex = index
   }
   
   override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -138,7 +88,7 @@ class ViewController: UIViewController {
     case 1:
       allShapes.array[selectedShapeIndex!].centerDidMove(previousTouch, newTouch: touchPosition)
       imageViewArray[selectedShapeIndex!].frame.origin = allShapes.array[selectedShapeIndex!].frame.origin
-    
+      
     case 2:
       guard selectedShape is Circle else {
         break
@@ -165,6 +115,58 @@ class ViewController: UIViewController {
     pinchDistance = nil
   }
   
+  //MARK - Helper Functions
+  
+  ///updates selectedShape, allShapes and imageViewArray
+  func addNewShape(center: CGPoint, newShape: AvailableShapes) {
+    //declare new shape at the touched position
+    var shape: Shape
+    switch newShape {
+    case .Square: shape = Square(newCenter: center)
+    case .Circle: shape = Circle(newCenter: center)
+    }
+    
+    //translate the shape into a UIImage
+    let shapeImage = translateShapeToImage(shape)
+    
+    //assign an imageView to the new shape at the touch coordinates
+    let imageView = UIImageView(frame: shape.frame)
+    imageView.image = shapeImage
+    
+    //assign new shapes and views to their corresponding arrays for future reference
+    allShapes.appendShape(shape)
+    imageViewArray.append(imageView)
+    self.view.addSubview(imageView)
+    
+    updateSelectedShape(shape, allShapes.array.count - 1)
+  }
+  
+  ///calculates the distance between two UITouches
+  func calculatePinchDistance(touch1: UITouch, touch2: UITouch) -> CGFloat {
+    let p1 = touch1.locationInView(view)
+    let p2 = touch2.locationInView(view)
+    
+    return hypot(p1.x - p2.x, p1.y - p2.y)
+  }
+
+  ///checks if user touch is within allShapes and updates selectedImage accordingly
+  func isShapeSelected(touch: CGPoint) -> Bool {
+    for (index, shape) in allShapes.array.enumerate() {
+      if CGRectContainsPoint(shape.frame, touch) {
+        updateSelectedShape(shape, index)
+        return true
+      }
+    }
+    updateSelectedShape(nil, nil)
+    return false
+  }
+  
+  ///update ViewController's instance variables
+  func updateSelectedShape(shape: Shape?, _ index: Int?) {
+    selectedShape = shape
+    selectedShapeIndex = index
+  }
+
   func random(n: Int) -> Int {
     return Int(arc4random_uniform(UInt32(n)))
   }
