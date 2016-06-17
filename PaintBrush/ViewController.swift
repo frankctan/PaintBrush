@@ -13,6 +13,7 @@ class ViewController: UIViewController {
   //TODO: seems we do a whole bunch of hard work to draw an image using value types only to convert to reference
   var images = [UIImageView]()
   var previousTouch = CGPointZero
+  var selectedImage: UIImageView?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -30,8 +31,6 @@ class ViewController: UIViewController {
     CGContextSetLineWidth(context, 3.0)
     square.draw(context!)
     CGContextClosePath(context)
-//    CGContextTranslateCTM(context, center.x - 40, center.y - 40)
-//    print("current transformation matrix: \(CGContextGetCTM(context))")
     CGContextStrokePath(context)
     
     let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -43,26 +42,49 @@ class ViewController: UIViewController {
     //there should only be one touch as we do not enable multitouch
     guard let touch = touches.first where touches.count == 1 else {print("multiple touches"); fatalError()}
     let touchPosition = touch.locationInView(view)
+    previousTouch = touchPosition
     print("touchPosition: \(touchPosition)")
     
-    for shape in images {
-      print("shape frame: \(shape.frame)")
-      if CGRectContainsPoint(shape.frame, touchPosition) {
-        print("inside shape!")
-        return
-      }
-    }
+    let flag = isImageSelected(previousTouch)
+    if flag {return}
     
     print("not inside shape!")
     let image = drawCustomImage(touchPosition)
-//    let imageView = UIImageView(frame: Square(newCenter: touchPosition).frame)
     let imageView = UIImageView(image: image)
     imageView.frame.origin = CGPoint(x: touchPosition.x - 40, y: touchPosition.y - 40)
-//    imageView.image = image
     images.append(imageView)
     self.view.addSubview(imageView)
-    images.append(imageView)
-    view.setNeedsDisplay()
+  }
+  
+  /// Checks if user touch is within a shape's imageView and updates selectedImage accordingly
+  func isImageSelected(touch: CGPoint) -> Bool {
+    for shape in images {
+      print("shape frame: \(shape.frame)")
+      if CGRectContainsPoint(shape.frame, touch) {
+        selectedImage = shape
+        print("inside shape!")
+        return true
+      }
+    }
+    selectedImage = nil
+    return false
+  }
+  
+  override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    guard let touch = touches.first where touches.count == 1 else {print("multiple touches"); fatalError()}
+    let touchPosition = touch.locationInView(view)
+    
+    if selectedImage != nil {
+      selectedImage!.frame.origin.x += touchPosition.x - previousTouch.x
+      selectedImage!.frame.origin.y += touchPosition.y - previousTouch.y
+    }
+    
+    previousTouch = touchPosition
+  }
+  
+  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    
+    selectedImage = nil
   }
 }
 
