@@ -12,28 +12,18 @@ import UIKit
 
 typealias Vector = CGPoint
 
-protocol Polygon {
-  var corners: [CGPoint] {get set}
-  var center: CGPoint {get}
-}
-
-protocol Selectable {
-  //frame defines the "hitbox" in which a user can interact with a Selectable shape
+protocol Shape: Drawable {
+  var center: CGPoint {get set}
+  //frame defines the "hitbox" in which a user can interact with a shape
   var frame: CGRect {get set}
   mutating func updateFrame()
 }
 
-//extension Polygon  {
-//  //for simplicity, we weight all corners equally for our center calculation
-//  var center: CGPoint {
-//    get {
-//      let total = corners.reduce(CGPoint(), combine: {CGPoint(x: $0.x + $1.x, y: $0.y + $1.y)})
-//      return CGPoint(x: total.x / CGFloat(corners.count), y: total.y / CGFloat(corners.count))
-//    }
-//  }
-//}
+protocol Polygon: Shape {
+  var corners: [CGPoint] {get set}
+}
 
-protocol Draggable: Selectable {
+protocol Draggable: Shape {
   mutating func centerDidMove(newCenter: CGPoint)
 }
 
@@ -65,6 +55,27 @@ protocol Renderer {
   func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
 }
 
+extension CGContext: Renderer {
+  func moveTo(position: CGPoint) {
+    CGContextMoveToPoint(self, position.x, position.y)
+  }
+  func lineTo(position: CGPoint) {
+    CGContextAddLineToPoint(self, position.x, position.y)
+  }
+  func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) {
+    let arc = CGPathCreateMutable()
+    CGPathAddArc(arc, nil, center.x, center.y, radius, startAngle, endAngle, true)
+    CGContextAddPath(self, arc)
+  }
+}
+
+struct AllShapes {
+  var shapesArray = [Shape]()
+  
+  mutating func appendToShapesArray(shape: Shape) {
+    shapesArray.append(shape)
+  }
+}
 
 struct Square: Polygon, Draggable, Drawable {
   var cornerVectors = [
@@ -74,18 +85,20 @@ struct Square: Polygon, Draggable, Drawable {
     Vector(x: 40, y: 40)]
   
   var corners = Array(count: 4, repeatedValue: CGPointZero)
-  
+  var frame = CGRect()
   var center = CGPointZero
+  
+  init(newCenter: CGPoint) {
+    centerDidMove(newCenter)
+  }
   
   mutating func updateCorners() {
     for index in 0..<corners.count {
       corners[index].x = cornerVectors[index].x + center.x
       corners[index].y = cornerVectors[index].y + center.y
     }
+    print("updated corners: \(corners)")
   }
-  
-  //Selectable
-  var frame = CGRect()
   
   mutating func updateFrame() {
     let cornerX = corners.map {$0.x}
@@ -98,9 +111,9 @@ struct Square: Polygon, Draggable, Drawable {
     let height = cornerY.maxElement()! - cornerY.minElement()!
     
     frame = CGRect(x: originX, y: originY, width: width, height: height)
+    print("updated frame: \(frame)")
   }
   
-  //Draggable
   mutating func centerDidMove(newCenter: CGPoint) {
     center = newCenter
     updateCorners()

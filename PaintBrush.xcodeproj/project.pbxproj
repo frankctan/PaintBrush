@@ -28,6 +28,7 @@
 		670EFB061D1339B500F595E6 /* DrawingStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingStructure.swift; sourceTree = "<group>"; };
 		670EFB081D137A4600F595E6 /* SimpleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleView.swift; sourceTree = "<group>"; };
 		670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Protocols+Structures.swift"; sourceTree = "<group>"; };
+		670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +64,7 @@
 				670EFAF41D13399500F595E6 /* AppDelegate.swift */,
 				670EFAF61D13399500F595E6 /* ViewController.swift */,
 				670EFB061D1339B500F595E6 /* DrawingStructure.swift */,
+				670EFB0C1D13DAFC00F595E6 /* MyPlayground.playground */,
 				670EFB0A1D13BBA000F595E6 /* Protocols+Structures.swift */,
 				670EFAF81D13399500F595E6 /* Main.storyboard */,
 				670EFB081D137A4600F595E6 /* SimpleView.swift */,
