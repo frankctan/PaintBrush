@@ -9,11 +9,14 @@
 import UIKit
 class ViewController: UIViewController {
   
-  //we use an imageViewArray to keep track of all the objects we add.
-  //TODO: seems we do a whole bunch of hard work to draw an image using value types only to convert to reference
-  var images = [UIImageView]()
+  //UI trackers
   var previousTouch = CGPointZero
-  var selectedImage: UIImageView?
+  var selectedShape: Shape?
+  var selectedShapeIndex: Int?
+  
+  //allShapes keeps a ledger of active shapes while imageViewArray holds the corresponding UIImageViews.
+  var allShapes = AllShapes()
+  var imageViewArray = [UIImageView]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -23,13 +26,18 @@ class ViewController: UIViewController {
     super.viewDidAppear(animated)
   }
   
-  func drawCustomImage(center: CGPoint) -> UIImage {
-    let square = Square(newCenter: CGPoint(x: 40, y: 40))
-    UIGraphicsBeginImageContextWithOptions(square.frame.size, false, 0)
+  ///uses the input shape to calculate the frame (in case of rotation) then aligns the shape's origin
+  ///with that of the graphics context to create the UIImage
+  func translateShapeToImage(shape: Shape) -> UIImage {
+    var tempShape = shape
+    UIGraphicsBeginImageContextWithOptions(tempShape.frame.size, false, 0)
+    tempShape.centerDidMove(CGPoint(x: shape.frame.size.width/2, y: shape.frame.size.height/2))
+    
     let context = UIGraphicsGetCurrentContext()
     CGContextSetStrokeColorWithColor(context, UIColor.redColor().CGColor)
+    CGContextSetRGBFillColor(context, 0, 0, 1, 1)
     CGContextSetLineWidth(context, 3.0)
-    square.draw(context!)
+    tempShape.draw(context!)
     CGContextClosePath(context)
     CGContextStrokePath(context)
     
@@ -39,52 +47,67 @@ class ViewController: UIViewController {
   }
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    //there should only be one touch as we do not enable multitouch
+    //there should only be one touch as we do not enable multitouch yet
     guard let touch = touches.first where touches.count == 1 else {print("multiple touches"); fatalError()}
     let touchPosition = touch.locationInView(view)
     previousTouch = touchPosition
-    print("touchPosition: \(touchPosition)")
     
-    let flag = isImageSelected(previousTouch)
-    if flag {return}
+    if isShapeSelected(previousTouch) {return}
     
-    print("not inside shape!")
-    let image = drawCustomImage(touchPosition)
-    let imageView = UIImageView(image: image)
-    imageView.frame.origin = CGPoint(x: touchPosition.x - 40, y: touchPosition.y - 40)
-    images.append(imageView)
-    self.view.addSubview(imageView)
+    addNewShape(touchPosition)
   }
   
-  /// Checks if user touch is within a shape's imageView and updates selectedImage accordingly
-  func isImageSelected(touch: CGPoint) -> Bool {
-    for shape in images {
-      print("shape frame: \(shape.frame)")
+  func addNewShape(center: CGPoint) {
+    //declare new shape at the touched position
+    let shape = Square(newCenter: center)
+    
+    //translate the shape into a UIImage
+    let shapeImage = translateShapeToImage(shape)
+    
+    //assign an imageView to the new shape at the touch coordinates
+    let imageView = UIImageView(frame: shape.frame)
+    imageView.image = shapeImage
+    
+    //assign new shapes and views to their corresponding arrays for future reference
+    allShapes.appendShape(shape)
+    imageViewArray.append(imageView)
+    self.view.addSubview(imageView)
+    
+    updateSelectedShape(shape, allShapes.array.count - 1)
+  }
+  
+  /// Checks if user touch is within allShapes and updates selectedImage accordingly
+  func isShapeSelected(touch: CGPoint) -> Bool {
+    for (index, shape) in allShapes.array.enumerate() {
       if CGRectContainsPoint(shape.frame, touch) {
-        selectedImage = shape
-        print("inside shape!")
+        updateSelectedShape(shape, index)
         return true
       }
     }
-    selectedImage = nil
+    
+    updateSelectedShape(nil, nil)
     return false
+  }
+  
+  func updateSelectedShape(shape: Shape?, _ index: Int?) {
+    selectedShape = shape
+    selectedShapeIndex = index
   }
   
   override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = touches.first where touches.count == 1 else {print("multiple touches"); fatalError()}
     let touchPosition = touch.locationInView(view)
     
-    if selectedImage != nil {
-      selectedImage!.frame.origin.x += touchPosition.x - previousTouch.x
-      selectedImage!.frame.origin.y += touchPosition.y - previousTouch.y
+    if selectedShape != nil {
+      allShapes.array[selectedShapeIndex!].centerDidMove(previousTouch, newTouch: touchPosition)
+      imageViewArray[selectedShapeIndex!].frame.origin = allShapes.array[selectedShapeIndex!].frame.origin
     }
     
     previousTouch = touchPosition
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    
-    selectedImage = nil
+    updateSelectedShape(nil, nil)
   }
 }
 

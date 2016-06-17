@@ -12,7 +12,7 @@ import UIKit
 
 typealias Vector = CGPoint
 
-protocol Shape: Drawable {
+protocol Shape: Drawable, Draggable {
   var center: CGPoint {get set}
   //frame defines the "hitbox" in which a user can interact with a shape
   var frame: CGRect {get set}
@@ -23,8 +23,9 @@ protocol Polygon: Shape {
   var corners: [CGPoint] {get set}
 }
 
-protocol Draggable: Shape {
+protocol Draggable {
   mutating func centerDidMove(newCenter: CGPoint)
+  mutating func centerDidMove(previousTouch: CGPoint, newTouch: CGPoint)
 }
 
 protocol Drawable {
@@ -69,20 +70,28 @@ extension CGContext: Renderer {
   }
 }
 
-struct AllShapes {
-  var shapesArray = [Shape]()
+struct AllShapes: Drawable {
+  var array = [Shape]()
   
-  mutating func appendToShapesArray(shape: Shape) {
-    shapesArray.append(shape)
+  mutating func appendShape(shape: Shape) {
+    array.append(shape)
+  }
+  
+  func draw(renderer: Renderer) {
+    for shape in array {
+      shape.draw(renderer)
+    }
   }
 }
 
-struct Square: Polygon, Draggable, Drawable {
+struct Square: Polygon, Drawable {
   var cornerVectors = [
     Vector(x: -40, y: 40),
     Vector(x: -40, y: -40),
     Vector(x: 40, y: -40),
     Vector(x: 40, y: 40)]
+  
+  let edgeLength: CGFloat = 80
   
   var corners = Array(count: 4, repeatedValue: CGPointZero)
   var frame = CGRect()
@@ -90,6 +99,10 @@ struct Square: Polygon, Draggable, Drawable {
   
   init(newCenter: CGPoint) {
     centerDidMove(newCenter)
+  }
+  
+  init() {
+    centerDidMove(CGPoint(x: edgeLength/2, y: edgeLength/2))
   }
   
   mutating func updateCorners() {
@@ -104,7 +117,7 @@ struct Square: Polygon, Draggable, Drawable {
     let cornerY = corners.map {$0.y}
     
     let originX = cornerX.minElement()!
-    let originY = cornerX.maxElement()!
+    let originY = cornerY.minElement()!
     
     let width = cornerX.maxElement()! - cornerX.minElement()!
     let height = cornerY.maxElement()! - cornerY.minElement()!
@@ -114,8 +127,57 @@ struct Square: Polygon, Draggable, Drawable {
   
   mutating func centerDidMove(newCenter: CGPoint) {
     center = newCenter
-    print("square.center: \(center)")
+    updateCorners()
+    updateFrame()
+  }
+  
+  mutating func centerDidMove(previousTouch: CGPoint, newTouch: CGPoint) {
+    center.x += newTouch.x - previousTouch.x
+    center.y += newTouch.y - previousTouch.y
     updateCorners()
     updateFrame()
   }
 }
+
+struct Circle: Shape, Drawable {
+  var center = CGPointZero
+  var radius = CGFloat()
+  var frame = CGRect()
+  
+  init(newCenter: CGPoint) {
+    center = newCenter
+    radius = 60.0
+    updateFrame()
+  }
+  
+  mutating func updateFrame() {
+    let originX = center.x - radius
+    let originY = center.y - radius
+    let origin = CGPoint(x: originX, y: originY)
+    let size = CGSize(width: 2 * radius, height: 2 * radius)
+    
+    frame = CGRect(origin: origin, size: size)
+  }
+  
+  mutating func centerDidMove(newCenter: CGPoint) {
+    center = newCenter
+    updateFrame()
+  }
+  
+  mutating func centerDidMove(previousTouch: CGPoint, newTouch: CGPoint) {
+    center.x += newTouch.x - previousTouch.x
+    center.y += newTouch.y - previousTouch.y
+    updateFrame()
+  }
+  
+  func draw(renderer: Renderer) {
+    renderer.arcAt(center, radius: radius, startAngle: 0.0, endAngle: CGFloat(M_PI * 2))
+  }
+}
+
+
+
+
+
+
+

@@ -10,6 +10,9 @@ struct Shape {
   mutating func changeCounter(new: Int) {
     importantCounter = new
   }
+  
+  func count(new:Int) {
+  }
 }
 
 var shape = Shape()
@@ -22,13 +25,20 @@ shape.changeCounter(5)
 
 shape.importantCounter
 
-shapesArray[0].importantCounter
+shapesArray[0].importantCounter = 5
+
 
 //the array is not automatically updated when the original object was modified!
 
 
+let a = shapesArray[0]
+
+//a == shapesArray[0]
 
 
+var b = a
+b
 
+print(CGRect(x: 0, y: 0, width: 80, height: 80))
 
 
